@@ -58,11 +58,10 @@ headers_sl = {
 
 while True:
     try:
-        artist_name = input('Enter an artist name: ')
+        artist_name = str(input('Enter an artist name: '))
         print('Searching for an artist...')
 
-        search_artist = f'artist/?query=artist:{artist_name}'
-        artists = requests.get(f'{base_url}{search_artist}', params=params).json()        
+        artists = requests.get(f'{base_url}artist/?query=artist:{artist_name}', params=params).json()        
         artists = json_normalize(artists['artists'])[['name', 'disambiguation', 'type', 'life-span.begin', 'id']]
         
         print(artists[['name', 'disambiguation', 'type', 'life-span.begin']].head(25))
@@ -102,8 +101,7 @@ try:
     mb_page = requests.get(mb_url) 
 
 except requests.exceptions.ReadTimeout:
-    # print('Check that https://musicbrainz.org is accessible from your location.')
-    sys.exit('Error! Check that https://musicbrainz.org is accessible from your location and try again.')
+    sys.exit('Error! Make sure that https://musicbrainz.org is accessible from your location and try again.')
 
 soup = BeautifulSoup(mb_page.text, 'lxml') 
 tags = soup.find('h3', string='Album').next_sibling.find_all('a', attrs={'href': re.compile(r'/release-group/*')})
@@ -158,11 +156,9 @@ params_sl = {
         'artistMbid': artist_id
     }
 
-search_setlists = 'search/setlists'
-
 # Items per page are limited to 20 in response, so find total number of pages and iterate through them
 
-resp = requests.get(f'{base_url_sl}{search_setlists}', headers=headers_sl, params=params_sl).json()
+resp = requests.get(f'{base_url_sl}search/setlists', headers=headers_sl, params=params_sl).json()
 total_pages = int(np.ceil(resp['total'] / resp['itemsPerPage']))
 
 setlists = []
@@ -176,7 +172,7 @@ for page in range(1, total_pages+1):
                         'p': page
                         }
 
-            setlists_page = requests.get(f'{base_url_sl}{search_setlists}', headers=headers_sl, params=params_sl).json()  
+            setlists_page = requests.get(f'{base_url_sl}search/setlists', headers=headers_sl, params=params_sl).json()  
             setlists_page = json_normalize(setlists_page['setlist'])
             setlists.append(setlists_page)
         
@@ -354,6 +350,7 @@ def bar_by_years():
 def group_by_months():
 
     # Add 'continent' column
+    # 'AQ' code (Antarctica) is missing in the converter
     setlists['continent'] = setlists['country_code'].apply(lambda x: country_alpha2_to_continent_code(x) if x != 'AQ' else 'AN')
 
     continent_names = {
@@ -948,8 +945,7 @@ available_data = pd.DataFrame.from_dict(available_data, orient='index', columns=
 
 def get_answer():
 
-    ask = 'Do you want to get some other info? y/n '
-    answer = input(ask)
+    answer = str(input('Do you want to get some other info? y/n '))
     print()
 
     return answer

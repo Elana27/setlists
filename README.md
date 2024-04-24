@@ -24,7 +24,7 @@ The 'setlists.py' script can help. This script allows you to analyze events and 
 4. Save the API Key and the token to separate text files with no file extension.
 5. Put the API Key and the token files in the **parent folder** of the folder from which the script will be executed. 
 6. Make sure that **[MusicBrainz](https://musicbrainz.org/)** is accessible from your location (if not, use a VPN).
-7. Run the Python script. 
+7. Run the Python script and follow the script instructions. 
 
 ## Script Description
 
