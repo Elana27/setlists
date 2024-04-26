@@ -38,7 +38,7 @@ Using the API, the script collects data from 3 data sources:
 
 All 3 sources can be freely edited by users, so some typos, missing data and contradictions are inevitable.
 
-The logic behind the script:
+**The logic behind the script:**
 
 1. Find artist and get its ID from MusicBrainz (API).
 2. Use artist ID to get the list of IDs of *official studio albums* (Web Scraping + API).

@@ -194,15 +194,17 @@ tracklists = tracklists.explode('tracklist').reset_index(drop=True)             
 tracks = json_normalize(tracklists['tracklist'])                                        # Flattens nested JSON (new columns added, track names are separated)
 tracklists = pd.concat([tracklists, tracks], axis=1)                                    # Joins flattened data to the original dataframe
 
-# Remove & rename columns, replace incorrect quote character
+# Remove & rename columns, replace characters causing problems
 tracklists = tracklists.drop(['tracklist', 'position', 'type_', 'duration', 'extraartists'], axis=1)
 
 if 'artists' in tracklists.columns:
 
     tracklists = tracklists.drop(['artists'], axis=1)
 
-tracklists = tracklists.replace({"’": "'"}, regex=True)                     
 tracklists.columns = ['album', 'release_year', 'song']
+
+tracklists = tracklists.replace({"’": "'"}, regex=True)
+tracklists['song'] = tracklists['song'].str.replace("&", "and")   
 
 # Get nested setlists
 # Need to explode data twice because of the Encore sections of set 
@@ -220,7 +222,8 @@ tapes_list = songs.query('song.str.contains("\'tape\': True", case=False)').inde
 songs = songs.query('index not in @tapes_list')
 
 # Parse song names
-songs['song'] = songs['song'].apply(lambda x: str(x).split(',')[0].split(':')[1].strip("\" '}") if pd.notna(x) else x)
+songs['song'] = songs['song'].apply(lambda x: str(x).split(',')[0].split(':')[1].strip("} ").strip("'").strip("\"") if pd.notna(x) else x).astype('string')
+songs['song'] = songs['song'].str.replace("&", "and")
 
 # Merge setlists and songs
 setlists = setlists.merge(songs[['id', 'song']], how='left', on='id')
