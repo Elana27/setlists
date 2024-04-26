@@ -576,7 +576,7 @@ def bar_by_cities():
     fig.update_traces(textposition='outside')
                 
     fig.update_layout(
-                    title=dict(text=f'<b>{group_by_countries()[1]}</b>', 
+                    title=dict(text=f'<b>{group_by_cities()[1]}</b>', 
                                x=0.5),
                     xaxis_tickangle=45,
                     coloraxis_showscale=False
@@ -607,7 +607,7 @@ def map_by_cities():
     fig.update_layout(
                     mapbox_style='open-street-map',
                     margin={'r':0, 'l':0,'b':0},
-                    title=dict(text=f'<b>{group_by_countries()[2]}</b>', 
+                    title=dict(text=f'<b>{group_by_cities()[2]}</b>', 
                                x=0.5))
     
     return save_to_html(fig, group_by_cities()[2])
