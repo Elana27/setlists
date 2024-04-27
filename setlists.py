@@ -248,7 +248,9 @@ setlists = setlists.merge(tracklists, how='left', left_on=setlists['song'].str.l
 
 setlists = setlists.drop(['song_y', 'key_0'], axis=1)
 setlists.rename(columns={'song_x': 'song'}, inplace=True)
-setlists['album'] = setlists['album'].fillna('-Other-')                                     # Marks non-album songs as '-Other-'
+
+# Mark non-album songs as '-Other-'
+setlists['album'] = np.where((setlists['album'].isna()) & (setlists['song'].notna()), '-Other-', setlists['album'])    
 
 # Change data types
 for c in setlists.select_dtypes(include='object').columns:
